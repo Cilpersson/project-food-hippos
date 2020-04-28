@@ -16,7 +16,7 @@ const toggleImage = () => {
 };
 
 //Choosing euro sign/-s from average cost
-const priceSymbol = cost => {
+const priceSymbol = (cost) => {
   if (cost <= 35) {
     return "€";
   } else if (cost >= 60) {
@@ -27,7 +27,7 @@ const priceSymbol = cost => {
 };
 
 //Choosing smiley from rating
-const smileIcon = ratingScore => {
+const smileIcon = (ratingScore) => {
   if (ratingScore <= 0.9) {
     iconPath = "smileyicons/1.svg";
   } else if (ratingScore <= 1.9) {
@@ -47,7 +47,7 @@ const smileIcon = ratingScore => {
 //Show if table booking is available or not
 const noTableBooking = "";
 
-const tableBooking = booking => {
+const tableBooking = (booking) => {
   if (booking === 1) {
     return `<button class="booking-button" id="booking-button">BOOK</button>`;
   } else {
@@ -58,25 +58,25 @@ const tableBooking = booking => {
 //Fetches data from API
 fetch(url, {
   headers: {
-    "user-key": apiKey
-  }
+    "user-key": apiKey,
+  },
 })
-  .then(response => {
+  .then((response) => {
     return response.json();
   })
-  .then(json => {
+  .then((json) => {
     let filteredList = json.restaurants;
 
     //Show restaurants
     const showRestaurants = () => {
       restaurantContainer.innerHTML = " ";
-      filteredList.forEach(resto => {
+      filteredList.forEach((resto) => {
         restaurantContainer.innerHTML += `<a href= ${
           resto.restaurant.url
         } class="resturant-card"> 
-          <img class="restaurant-image" src= ${
-            resto.restaurant.photos[0].photo.thumb_url
-          }>
+        <img class="restaurant-image" src= ${
+          resto.restaurant.photos[0].photo.thumb_url
+        }>
         <h3>${resto.restaurant.name}</h3> 
         <div class="b-a-container">
         <p class="address">${resto.restaurant.location.address}</p>
@@ -95,18 +95,19 @@ fetch(url, {
     //filters restaurants on price range
     const filterPrice = () => {
       if (priceLow.checked) {
+        console.log(priceLow.checked);
         filteredList = json.restaurants.filter(
-          item => item.restaurant.average_cost_for_two <= 35
+          (item) => item.restaurant.average_cost_for_two <= 35
         );
       } else if (priceMedium.checked) {
         filteredList = json.restaurants.filter(
-          item =>
+          (item) =>
             item.restaurant.average_cost_for_two > 35 &&
             item.restaurant.average_cost_for_two < 60
         );
       } else if (priceHigh.checked) {
         filteredList = json.restaurants.filter(
-          item => item.restaurant.average_cost_for_two >= 60
+          (item) => item.restaurant.average_cost_for_two >= 60
         );
       }
       showRestaurants();
@@ -116,26 +117,21 @@ fetch(url, {
 
     //sort restaurants by aggregated rating
     const sortByRating = () => {
-      if (order === "low") {
-        order = "high";
-      } else {
-        order = "low";
-      }
-
-      if (order === "low") {
+      if (order === "high") {
         filteredList.sort(
           (a, b) =>
             b.restaurant.user_rating.aggregate_rating -
             a.restaurant.user_rating.aggregate_rating
         );
+        order = "low";
       } else {
         filteredList.sort(
           (a, b) =>
             a.restaurant.user_rating.aggregate_rating -
             b.restaurant.user_rating.aggregate_rating
         );
+        order = "high";
       }
-
       showRestaurants();
     };
 
